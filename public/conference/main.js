@@ -1,0 +1,47 @@
+document.getElementById('conForm').addEventListener('submit', function(event) {
+event.preventDefault(); // Ngăn không cho form submit mặc định
+
+// Lấy giá trị từ ô input
+const inputData = document.getElementById('inputData').value;
+
+// Tạo payload để gửi đến API
+const payload = {
+    data: inputData
+};
+
+console.log(payload)
+
+// Gửi dữ liệu đến API
+fetch('https://hook.us1.make.com/v3xsl59ytk6o0ophhagbj8xukrpc2ix7', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+})
+.then(response => response.json())
+.then(data => {
+    // Hiện trạng thái data
+    document.getElementById('checkErr').textContent = '<----------- Data Success ----------->';
+
+    // Mở link với dữ liệu nhận được từ API
+    const receivedData = data;
+    const popup = window.open (`../qrcode/?text=${encodeURIComponent(receivedData)}`, '_blank', 'width=600,height=400');
+
+    // Tự động đóng cửa sổ popup sau 3 giây
+    setTimeout(() => {
+        popup.close();
+    }, 1000);
+
+    // Xóa dữ liệu trong ô input
+    document.getElementById('inputData').value = '';
+})
+.catch((error) => {
+    // Hiện trạng thái data
+    document.getElementById('checkErr').textContent = '<----------- Data Fail ----------->';
+    console.error('Error:', error);
+
+    // Xóa dữ liệu trong ô input
+    document.getElementById('inputData').value = '';
+});
+});

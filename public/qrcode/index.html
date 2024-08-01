@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode - Information Verification Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black flex justify-center items-center w-full h-screen">
+    <img id="myImage" alt="Image from URL parameter" />
+
+    <script>
+        // Hàm để đọc các tham số từ URL
+        function getUrlParams() {
+            const params = {};
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            urlParams.forEach((value, key) => {
+                params[key] = value;
+            });
+            return params;
+        }
+
+        // Sử dụng hàm để lấy params
+        const params = getUrlParams();
+
+        // Kiểm tra và đặt src cho thẻ img
+        if (params.text) {
+            const img = document.getElementById('myImage');
+            const baseUrl = 'https://port.rx-vietnamshows.com/barcode/';
+            const imageUrl = `${baseUrl}?bcid=code39&text=${params.text}&includetext&guardwhitespace&backgroundcolor=FFFFFF&padding=5&scale=2`;
+            img.src = imageUrl;
+        } else {
+            console.log('Không tìm thấy tham số text trong URL');
+        }
+
+        setTimeout(function() {
+            window.close();
+        }, 3000);
+    </script>
+</body>
+</html>

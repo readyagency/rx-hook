@@ -1,14 +1,19 @@
 const express = require('express');
 const axios = require('axios');
-const bodyParser = require('body-parser');
+const path = require('path');
 const sql = require('mssql');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-app.use(bodyParser.json());
+// Cấu hình để phục vụ các tệp tĩnh (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware để phân tích JSON trong body của yêu cầu
+app.use(express.json());
+
+// Cấu hình Database MSSQL
 const dbConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -19,7 +24,8 @@ const dbConfig = {
         trustServerCertificate: true,  // Bỏ qua xác thực SSL
         enableArithAbort: true  // Dừng truy vấn ngay lập tức khi gặp lỗi và trả về lỗi cho ứng dụng
     },
-    port: parseInt(process.env.DB_PORT, 10)
+    port: parseInt(process.env.DB_PORT, 10),
+    requestTimeout: 30000  // Tăng thời gian chờ lên 30 giây
 };
 
 // Middleware để kiểm tra API key
@@ -30,7 +36,27 @@ function checkApiKey(req, res, next) {
     } else {
         res.status(401).send({ error: 'Unauthorized: Invalid API key' });
     }
-}
+};
+
+// Route chính
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Route về trang Conference
+app.get('/conference', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'conference', 'index.html'));
+});
+
+// Route về trang Qrcode
+app.get('/qrcode', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'qrcode', 'index.html'));
+});
+
+// Route về trang Vip
+app.get('/vip', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'vip', 'index.html'));
+});
 
 // Hàm kiểm tra và xử lý dữ liệu mới
 async function checkForNewData() {
@@ -49,9 +75,8 @@ async function checkForNewData() {
         if (result.recordset.length > 0) {
             const { USERID, CHECKTIME } = result.recordset[0];
 
-            // Gửi dữ liệu tới API
+            // Gửi dữ liệu tới API Zoho
             await sendDataToAPI(USERID, CHECKTIME);
-            console.log('Data Check in', USERID, CHECKTIME);
 
             // Cập nhật trạng thái của bản ghi đã được xử lý
             await pool.request()
@@ -66,7 +91,7 @@ async function checkForNewData() {
     } catch (err) {
         console.error(utcPlus7.toISOString(), '- Lỗi kết nối tới DB:', err);
     }
-}
+};
 
 // Hàm xử lý gửi dữ liệu tới API
 async function sendDataToAPI(userId, checkTime) {
@@ -92,14 +117,18 @@ async function sendDataToAPI(userId, checkTime) {
 
         if (result.recordset.length > 0) {
             const data = result.recordset[0];
-            console.log('Data sẽ xoá', data);
+            console.log(utcPlus7.toISOString(), '- VIP', data.CardNo, 'đã CHECK-IN');
 
             const response = await axios.post(`${process.env.API_URL}?publickey=${process.env.API_KEY}`, {
                 user: data.CardNo,
                 time: data.CHECKTIME,
                 tf: "I"
             });
-            console.log(utcPlus7.toISOString(), '- Lệnh delete đã gửi tới Zoho:', response.data);
+            if (response.data.code === 3000) {
+                console.log(utcPlus7.toISOString(), '- Đã lưu CHECK-IN của VIP', data.CardNo, 'vào Zoho');
+            } else {
+                console.error(utcPlus7.toISOString(), '- Lỗi gửi CHECK-IN của VIP tới Zoho:', response.data.code);
+            }
         } else {
             console.log('Không tìm thấy dữ liệu để gửi.');
         }
@@ -107,7 +136,7 @@ async function sendDataToAPI(userId, checkTime) {
     } catch (error) {
         console.error(utcPlus7.toISOString(), '- Lỗi khi gửi dữ liệu:', error);
     }
-}
+};
 
 // Thiết lập kiểm tra dữ liệu mới mỗi 5 giây
 setInterval(checkForNewData, 5000);
@@ -195,7 +224,7 @@ app.post('/delete-vip', checkApiKey, async (req, res) => {
         const result = await sql.query`DELETE FROM USERINFO WHERE Badgenumber = ${userId};`;
 
         res.status(200).send({ message: 'User has been deleted', result });
-        console.log(utcPlus7.toISOString(), '-', userId, 'has been DELETED',);
+        console.log(utcPlus7.toISOString(), '- VIP', userId, 'đã hết số lần vào VIP lounge',);
     } catch (err) {
         console.error(utcPlus7.toISOString(), 'SQL error', err);
         res.status(500).send({ error: 'Internal server error' });

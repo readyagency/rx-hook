@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html lang="vi">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>VIP Information Verification Portal</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="h-screen bg-gray-100 flex items-center justify-center">
+            <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-1/2">
+                <h1 class="text-center text-4xl font-bold mb-6 text-orange-500">VIP Verification Portal</h1>
+                <form id="vipForm">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2" for="inputData">
+                            Emperial Code
+                        </label>
+                        <input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="inputData" name="inputData" required autofocus placeholder="Add your code here" />
+                    </div>
+                    <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="submit">
+                        Check
+                    </button>
+                </form>
+                <div id="checkErr" class="flex items-center justify-center my-4 italic"></div>
+            </div>
+        </div>
+        
+        <script src="./main.js" async defer></script>
+    </body>
+</html>
