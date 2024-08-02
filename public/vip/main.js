@@ -6,13 +6,13 @@ document.getElementById('vipForm').addEventListener('submit', function(event) {
 
     // Tạo payload để gửi đến API
     const payload = {
-        data: inputData
+        "EmperiaCode": inputData
     };
 
     console.log(payload)
 
     // Gửi dữ liệu đến API
-    fetch('https://hook.us1.make.com/5ca77hw9tmax9lcikqntdhgc9y7hty5n', {
+    fetch('/vip-check', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -25,10 +25,10 @@ document.getElementById('vipForm').addEventListener('submit', function(event) {
         document.getElementById('checkErr').textContent = '<----------- Data Success ----------->';
 
         // Mở link với dữ liệu nhận được từ API
-        const receivedData = data;
-        const popup = window.open (`../qrcode/?text=${encodeURIComponent(receivedData)}`, '_blank', 'width=600,height=400');
+        const receivedData = data.data.result;
+        const popup = window.open (`../qrcode/?text=${receivedData}`, '_blank', 'width=600,height=400');
 
-        // Tự động đóng cửa sổ popup sau 3 giây
+        // Tự động đóng cửa sổ popup sau 1 giây
         setTimeout(() => {
             popup.close();
         }, 1000);

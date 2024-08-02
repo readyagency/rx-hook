@@ -58,6 +58,70 @@ app.get('/vip', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'vip', 'index.html'));
 });
 
+// Route check Vip
+app.post('/vip-check', async (req, res) => {
+    const { EmperiaCode } = req.body;
+
+    const payload = {
+        "EmperiaCode": EmperiaCode,
+        "Type": "VIP"
+    };
+
+    try {
+        const response = await axios.post('https://www.zohoapis.com/creator/custom/tsxcorp/returnBarcode?publickey=4a8kgms41COT7Z5vaphd1XjFk', payload, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const receivedData = response.data;
+
+        // Trả về dữ liệu nhận được từ API
+        res.json({
+            message: 'Data Success',
+            data: receivedData
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({
+            message: 'Data Fail',
+            error: error.toString()
+        });
+    }
+});
+
+// Route check Conference
+app.post('/cof-check', async (req, res) => {
+    const { EmperiaCode } = req.body;
+
+    const payload = {
+        "EmperiaCode": EmperiaCode,
+        "Type": "COF"
+    };
+
+    try {
+        const response = await axios.post('https://www.zohoapis.com/creator/custom/tsxcorp/returnBarcode?publickey=4a8kgms41COT7Z5vaphd1XjFk', payload, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const receivedData = response.data;
+
+        // Trả về dữ liệu nhận được từ API
+        res.json({
+            message: 'Data Success',
+            data: receivedData
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({
+            message: 'Data Fail',
+            error: error.toString()
+        });
+    }
+});
+
 // Hàm kiểm tra và xử lý dữ liệu mới
 async function checkForNewData() {
     // Lấy thời gian hiện tại
