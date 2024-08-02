@@ -147,9 +147,6 @@ async function checkForNewData() {
                 .input('userId', sql.Int, USERID)
                 .input('checkTime', sql.DateTime, CHECKTIME)
                 .query(`UPDATE CheckInOutQueue SET Processed = 1 WHERE USERID = @userId AND CHECKTIME = @checkTime`);
-
-            // Đóng kết nối cơ sở dữ liệu
-            await sql.close();
         }
 
     } catch (err) {
