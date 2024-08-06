@@ -93,7 +93,7 @@ app.post('/cof-check', async (req, res) => {
         "EmperiaCode": EmperiaCode,
         "Type": "COF"
     };
-    console.log(payload);
+    console.log('payload ====>', payload);
 
     try {
         const response = await axios.post('https://www.zohoapis.com/creator/custom/tsxcorp/returnBarcode?publickey=4a8kgms41COT7Z5vaphd1XjFk', payload, {
@@ -103,7 +103,7 @@ app.post('/cof-check', async (req, res) => {
         });
         
         const receivedData = response.data;
-        console.log(receivedData);
+        console.log('receivedData ====>', receivedData);
 
         // Trả về dữ liệu nhận được từ API
         res.json({
