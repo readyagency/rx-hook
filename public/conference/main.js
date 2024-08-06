@@ -26,7 +26,8 @@ fetch('/cof-check', {
 
     // Mở link với dữ liệu nhận được từ API
     const receivedData = data.data.result;
-    const popup = window.open (`../qrcode/?text=${receivedData}`, '_blank', 'width=600,height=400');
+    console.log(receivedData);
+    window.open (`https://port.rx-vietnamshows.com/barcode/?bcid=code39&text=${receivedData}&includetext&guardwhitespace&backgroundcolor=FFFFFF&padding=5&scale=2`, '_blank', 'width=600,height=400');
 
     // Tự động đóng cửa sổ popup sau 3 giây
     setTimeout(() => {

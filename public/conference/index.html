@@ -34,7 +34,22 @@
                 <div id="checkErr" class="flex items-center justify-center my-4 italic"></div>
             </div>
         </div>
-        
+
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                // Tạo đối tượng Audio
+                const audio = new Audio('../voice-test-1.mp3');
+
+                // Lấy phần tử input
+                const inputElement = document.getElementById('inputData');
+
+                // Lắng nghe sự kiện 'input'
+                inputElement.addEventListener('input', (event) => {
+                    // Phát âm thanh
+                    audio.play();
+                });
+            });
+        </script>
         <script src="./main.js" async defer></script>
     </body>
 </html>

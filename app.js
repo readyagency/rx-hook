@@ -10,6 +10,16 @@ const port = process.env.PORT || 8080;
 // Cấu hình để phục vụ các tệp tĩnh (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Adjust the allowed origin as necessary
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+    next();
+  });
+
 // Middleware để phân tích JSON trong body của yêu cầu
 app.use(express.json());
 
@@ -98,6 +108,7 @@ app.post('/cof-check', async (req, res) => {
         "EmperiaCode": EmperiaCode,
         "Type": "COF"
     };
+    console.log(payload);
 
     try {
         const response = await axios.post('https://www.zohoapis.com/creator/custom/tsxcorp/returnBarcode?publickey=4a8kgms41COT7Z5vaphd1XjFk', payload, {
@@ -107,6 +118,7 @@ app.post('/cof-check', async (req, res) => {
         });
         
         const receivedData = response.data;
+        console.log(receivedData);
 
         // Trả về dữ liệu nhận được từ API
         res.json({
