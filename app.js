@@ -53,21 +53,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Route về trang Conference
-app.get('/conference', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'conference', 'index.html'));
-});
-
-// Route về trang Qrcode
-app.get('/qrcode', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'qrcode', 'index.html'));
-});
-
-// Route về trang Vip
-app.get('/vip', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'vip', 'index.html'));
-});
-
 // Route check Vip
 app.post('/vip-check', async (req, res) => {
     const { EmperiaCode } = req.body;
